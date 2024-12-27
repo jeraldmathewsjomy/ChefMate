@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Recipe Recommendations</title>
+</head>
+<body>
+    <h1>Recommended Recipes</h1>
+    <table>
+        <tr>
+            <th>Recipe Name</th>
+            <th>Description</th>
+            <th>Photo</th>
+            <th>Action</th>
+        </tr>
+        {% for recipe in recipes %}
+        <tr>
+            <td style="font-size: 24px; font-weight: bold;">{{ recipe['name'] }}</td>
+            <td>{{ recipe['description'] }}</td>
+            <td><img src="{{ recipe['photo_url'] }}" alt="{{ recipe['name'] }}" style="width: 100px; height: auto;"></td>
+            <td><a href="{{ url_for('recipe_detail', recipe_id=recipe['id']) }}">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

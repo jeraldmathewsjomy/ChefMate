@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>{{ recipe['name'] }}</title>
+</head>
+<body>
+    <h1>{{ recipe['name'] }}</h1>
+    <img src="{{ recipe['photo_url'] }}" alt="{{ recipe['name'] }}" style="width: 200px; height: auto;">
+    <p><strong>Estimated Cooking Time:</strong> {{ recipe['cooking_time'] }}</p>
+    <h3>Ingredients:</h3>
+    <ul>
+        {% set ingredients = recipe['ingredients'].split(', ') %}
+        {% set types = recipe['ingredient_types'].split(', ') %}
+        {% for i in range(ingredients | length) %}
+            {% if types[i] %}
+                <li>{{ ingredients[i] }} ({{ types[i] }})</li>
+            {% else %}
+                <li>{{ ingredients[i] }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h3>Cooking Steps:</h3>
+    <ol>
+        {% for step in recipe['cooking_steps'].split(', ') %}
+            <li>{{ step }}</li>
+        {% endfor %}
+    </ol>
+</body>
+</html>
