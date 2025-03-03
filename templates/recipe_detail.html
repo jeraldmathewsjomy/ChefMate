@@ -4,29 +4,251 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>{{ recipe['name'] }}</title>
+    <title>{{ recipe.name }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Playfair+Display:wght@700&family=Lora:wght@400&display=swap');
+
+        /* GENERAL STYLING */
+        body {
+            font-family: 'Lora', serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+
+        /* IMAGE CONTAINER */
+        .image-container {
+            position: relative;
+            width: 100vw;
+            height: 40vh;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .image-container h1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 3px;
+            padding: 10px 20px;
+            width: 90%;
+            z-index: 2;
+            font-family: 'Merriweather', serif;
+        }
+
+        /* RECIPE DESCRIPTION */
+        .description-container {
+            max-width: 750px;
+            margin: 40px auto 20px;
+            text-align: center;
+            font-family: 'Lora', serif;
+            font-size: 18px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        /* CENTERED INFO SECTION */
+        .info-container {
+            display: flex;
+            justify-content: center; /* Center aligns both sections */
+            gap: 100px;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .info-box {
+            text-align: center; /* Centers text within the box */
+        }
+
+        .info-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-family: 'Merriweather', serif;
+            color: #222;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .info-box ul li {
+            font-size: 16px;
+            line-height: 1.6;
+            font-family: 'Lora', serif;
+            color: #555;
+            position: relative;
+            padding-left: 15px; /* Space for custom bullet */
+            text-align: left; /* Left-align bullets while keeping content centered */
+        }
+
+        /* Custom Bullet Points */
+        .info-box ul li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #444;
+            font-size: 16px;
+        }
+
+        /* STEPS CONTAINER */
+        .steps-container {
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: left;
+            position: relative;
+            padding-left: 140px; /* Adjust space for vertical heading */
+        }
+
+        /* VERTICAL "COOKING STEPS" HEADING */
+        .steps-heading {
+            position: absolute;
+            left: -200px; /* Moved further left */
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #222;
+            font-family: 'Merriweather', serif;
+            white-space: nowrap;
+        }
+
+        /* INDIVIDUAL STEP CONTAINER */
+        .step {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+
+        /* STEP TITLE */
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+            color: #444;
+            letter-spacing: 1px;
+        }
+
+        /* STEP DESCRIPTION */
+        .step-description {
+            font-size: 17px;
+            line-height: 1.8;
+            font-family: 'Lora', serif;
+            color: #555;
+        }
+
+                
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            font-family: 'Merriweather', serif;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            z-index:10000;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.05);
+        }
+
+        .back-button::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>{{ recipe['name'] }}</h1>
-    <img src="{{ recipe['photo_url'] }}" alt="{{ recipe['name'] }}" style="width: 200px; height: auto;">
-    <p><strong>Estimated Cooking Time:</strong> {{ recipe['cooking_time'] }}</p>
-    <h3>Ingredients:</h3>
-    <ul>
-        {% set ingredients = recipe['ingredients'].split(', ') %}
-        {% set types = recipe['ingredient_types'].split(', ') %}
-        {% for i in range(ingredients | length) %}
-            {% if types[i] %}
-                <li>{{ ingredients[i] }} ({{ types[i] }})</li>
-            {% else %}
-                <li>{{ ingredients[i] }}</li>
-            {% endif %}
+
+    <!-- BACK BUTTON -->
+    <a href="javascript:history.back()" class="back-button">
+        BACK
+    </a>
+
+    <!-- IMAGE SECTION -->
+    <div class="image-container">
+        <img src="{{ recipe.photo_url }}" alt="{{ recipe.name }}">
+        <h1>{{ recipe.name }}</h1>
+    </div>
+
+    <!-- DESCRIPTION SECTION -->
+    <div class="description-container">
+        <p>{{ recipe.description }}</p>
+    </div>
+
+    <!-- FULLY CENTERED INFO SECTION -->
+    <div class="info-container">
+        <div class="info-box">
+            <h3>Total Time</h3>
+            <ul>
+                <li>{{ recipe.cooking_time }}</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>Ingredients</h3>
+            <ul>
+                {% for ingredient in recipe.ingredients.split(',') %}
+                    <li>{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- COOKING STEPS SECTION -->
+    <div class="steps-container">
+        <div class="steps-heading">COOKING STEPS</div>
+        {% for step in recipe.cooking_steps %}
+        <div class="step">
+            <div class="step-title">STEP {{ loop.index }}: {{ step.split(':')[0]|upper }}</div>
+            <div class="step-description">{{ step.split(':')[1] if ':' in step else step }}</div>
+        </div>
         {% endfor %}
-    </ul>
-    <h3>Cooking Steps:</h3>
-    <ol>
-        {% for step in recipe['cooking_steps'].split(', ') %}
-            <li>{{ step }}</li>
-        {% endfor %}
-    </ol>
+    </div>
+
 </body>
 </html>

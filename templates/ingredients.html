@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Recommendation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Your existing styles */
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+
+        /* Reset default margins and paddings */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Ensure the background covers the entire screen */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Background Slider */
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background Containers */
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        /* Active background */
+        .background-container.active {
+            opacity: 1;
+        }
+
+        /* Overlay Content */
+        .overlay {
+            position: absolute;
+            margin-top:40px;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+            color: white;
+            max-width: 500px;
+            z-index: 2;
+        }
+
+        .overlay h1 {
+            font-size: 2.3rem;
+            font-weight: bold;
+            
+        }
+
+        .overlay p {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #f8f8f8;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Recipe Form */
+        .recipe-form {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .recipe-form input, .recipe-form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .recipe-form input {
+            background: rgba(255, 255, 255, 0.5);
+            color: #333;
+        }
+
+        .recipe-form button {
+            background: yellow;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .recipe-form button:hover {
+            background: #f1c40f;
+        }
+
+        
+        /* Dots Navigation */
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        
+        .dot {
+            width: 6px;  /* Reduced size */
+            height: 6px; /* Reduced size */
+            margin: 3px; /* Adjusted spacing */
+            background: #ddd;
+            display: inline-block;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .dot.active {
+            background: yellow;
+        }
+        
+
+        /* Logo */
+        .logo {
+            position: absolute;
+            left: 20px;
+            width: 140px;
+            height: auto;
+            z-index: 9999;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Navbar */
+        header {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo -->
+    <div class="logo">
+        <img src="{{ url_for('static', filename='Assets/icon.png') }}" alt="Chefmate Logo">
+    </div>
+
+    <!-- Navbar -->
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}#home">HOME</a></li>
+                <li><a href="{{ url_for('index') }}#menu">MENU</a></li>
+                <li><a href="https://aboutjerald.netlify.app/" target="_blank">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+
+    <!-- Background Slider -->
+    <div class="slider">
+        <div class="background-container active" id="background1"></div>
+        <div class="background-container" id="background2"></div>
+
+        <div class="overlay">
+            <h1>Recipe Recommendation System</h1>
+            <p>Enter ingredients to find the best recipe suggestions!</p>
+            <form action="/recommend" method="post" class="recipe-form">
+                <label for="ingredients">Enter Ingredients</label><br>
+                <input type="text" id="ingredients" name="ingredients" placeholder="e.g., tomato, garlic, onion"><br><br>
+                <button type="submit">Get Recipes</button>
+            </form>
+        </div>
+
+        <div class="dots">
+            <span class="dot active" onclick="changeBackground(0)"></span>
+            <span class="dot" onclick="changeBackground(1)"></span>
+            <span class="dot" onclick="changeBackground(2)"></span>
+        </div>
+    </div>
+
+    <script>
+        const backgrounds = [
+        "https://images.pexels.com/photos/1482803/pexels-photo-1482803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        "https://images.pexels.com/photos/3298637/pexels-photo-3298637.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        "https://images.pexels.com/photos/461359/pexels-photo-461359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ];
+    
+        let currentIndex = 0;
+        const background1 = document.getElementById("background1");
+        const background2 = document.getElementById("background2");
+        const dots = document.querySelectorAll(".dot");
+
+        background1.style.backgroundImage = `url('${backgrounds[0]}')`;
+        background2.style.backgroundImage = `url('${backgrounds[1]}')`;
+
+        function changeBackground(index) {
+            currentIndex = index;
+            updateBackground();
+        }
+
+        function updateBackground() {
+            let nextIndex = (currentIndex + 1) % backgrounds.length;
+
+            if (background1.classList.contains("active")) {
+                background2.style.backgroundImage = `url('${backgrounds[nextIndex]}')`;
+                background2.classList.add("active");
+                background1.classList.remove("active");
+            } else {
+                background1.style.backgroundImage = `url('${backgrounds[nextIndex]}')`;
+                background1.classList.add("active");
+                background2.classList.remove("active");
+            }
+
+            dots.forEach(dot => dot.classList.remove("active"));
+            dots[currentIndex].classList.add("active");
+
+            currentIndex = nextIndex;
+        }
+
+        setInterval(updateBackground, 5000);
+    </script>
+
+</body>
+</html>
+
+ 

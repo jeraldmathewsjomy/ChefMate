@@ -1,15 +1,378 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Recipe Recommendation</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chefmate - Recipe Recommendation System</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Merriweather:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg">
+    <link rel="preload" as="image" href="https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
+    <link rel="preload" as="image" href="https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
+ 
+    
+    <style>
+
+        /* Headings: Elegant and readable */
+        h1, h2 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+        }
+        
+        /* Subheadings: More letter spacing and bold */
+        h3 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 700; /* Bold */
+            letter-spacing: 2px; /* Increased letter spacing */
+            text-transform: uppercase; /* Optional: Makes it look sleek */
+        }
+        
+        /* Paragraphs: Smaller size, single-line content */
+        p {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 400;
+            font-size: 11px; /* Reduced size */
+            white-space: nowrap; /* Ensures content stays in a single line */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Adds "..." if content overflows */
+        }
+        
+        /* Navigation and Buttons: Sleek & modern */
+        .nav-links a, .btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }       
+         
+        /* Global Styles */
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 140px; /* Increased size */
+            height: auto;
+            z-index: 9999;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .nav-links li {
+            margin: 0 15px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Navigation and Buttons: Sleek & modern */
+        .nav-links a, .btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        /* Adjust the 'CONTACT US' button to be slightly lower */
+        .btn {
+            padding: 10px 18px;
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px; /* Adds space below */
+        }
+        
+        .btn:hover {
+            background-color: gray;
+            color: white;
+        }
+
+        /* Slideshow Section */
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow-: hidden;
+        }
+
+        .slideshow-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 1.5s ease-in-out;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Slideshow: Dark Overlay Effect */
+        .slide::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* 40% Black Overlay */
+            z-index: 1; /* Places it above the image but below the text */
+        }
+        
+        /* Ensure text appears above the overlay */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            opacity: 1;
+            z-index: 2; /* Above the overlay */
+        }
+        
+
+        .content h3 {
+            font-size: 22px;
+            margin-bottom: -30px;
+        }
+
+        .content h1 {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+
+        /* Active Slide */
+        .active-slide .content {
+            opacity: 1;
+        }
+
+        .recipes-section {
+            text-align: center;
+            padding: 40px 0;
+            background: #f8f8f8;
+        }
+    
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Auto-adjust */
+            grid-template-rows: auto;
+            gap: 20px;
+            max-width: 80vw;
+            margin: auto;
+            padding: 20px;
+            justify-content: center;
+        }
+        @media (min-width: 1024px) {
+            .recipe-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3x3 layout on larger screens */
+                grid-template-rows: repeat(3, auto);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .recipe-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2x4 for smaller screens */
+                grid-template-rows: repeat(4, auto);
+            }
+        }  
+        .recipe-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
+            max-height: 220px; /* Reduce size to fit within viewport */
+        }
+        
+        .recipe-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .recipe-item h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .recipe-item p {
+            font-size: 14px;
+            color: gray;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Buttons */
+        .recipe-item .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #ff6347;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .recipe-item .btn:hover {
+            background: #cc4c39;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Recipe Recommendation System</h1>
-    <form action="/recommend" method="post">
-        <label for="ingredients">Enter Ingredients:</label><br>
-        <input type="text" id="ingredients" name="ingredients" placeholder="e.g., tomato, garlic, onion"><br><br>
-        <button type="submit">Get Recipes</button>
-    </form>
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='Assets/icon.png') }}" alt="Chefmate Logo">
+    </div>
+
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">HOME</a></li>
+                <li><a href="#menu">MENU</a></li>
+                <li><a href="{{ url_for('ingredients_page') }}">RECOMMENDATION</a></li>
+                <li><a href="https://aboutjerald.netlify.app/" target="_blank">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+
+    <!-- Slideshow Section -->
+    <section class="slideshow" id="home">
+        <div class="slideshow-container">
+            <div class="slide active-slide">
+                <img src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg" alt="Dish">
+                <div class="content">
+                    <h3>HAPPY HOURS AT</h3>
+                    <h1>Chefmate</h1>
+                    <p>Elevate your home-cooking experience with an AI-powered recipe recommendation system.</p>
+                    <a href="{{ url_for('ingredients_page') }}" class="btn">LET'S COOK</a>
+
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Dish">
+                <div class="content">
+                    <h3>YOUR PERSONALIZED</h3>
+                    <h1>Digital Chef</h1>
+                    <p>Whether you're a beginner or an expert, Chefmate brings you the best recipes tailored to your taste.</p>
+                    <a href="{{ url_for('ingredients_page') }}" class="btn">LET'S COOK</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Dish">
+                <div class="content">
+                    <h3>DISCOVER NEW FLAVORS</h3>
+                    <h1>Cook Like a Pro</h1>
+                    <p>Experiment with ingredients and master the art of cooking with Chefmate's AI-powered recipe recommendations.</p>
+                    <a href="{{ url_for('ingredients_page') }}" class="btn">LET'S COOK</a>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="recipes-section" id="menu">
+        <h2>Available Recipes</h2>
+        <div class="recipe-grid">
+            {% for recipe in recipes %}
+            <div class="recipe-item">
+                <h3>{{ recipe.name }}</h3>
+                <p>{{ recipe.description[:100] }}...</p>
+                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn">View Recipe</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <script>
+
+        
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const slideContainer = document.querySelector('.slideshow-container');
+
+        function showSlides() {
+            // Move the slideshow
+            slideContainer.style.transform = `translateX(-${slideIndex * 100}%)`;
+
+            // Reset all text visibility
+            slides.forEach(slide => slide.classList.remove("active-slide"));
+            slides[slideIndex].classList.add("active-slide");
+
+            // Move to next slide
+            slideIndex = (slideIndex + 1) % slides.length;
+
+            setTimeout(showSlides, 5000); // 5-second interval
+        }
+
+        document.addEventListener("DOMContentLoaded", showSlides);
+
+
+        document.querySelectorAll(".view-recipe-btn").forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent default jump
+                const section = document.querySelector(".recipe-grid"); // Adjust to your section class
+                const navHeight = document.querySelector("nav").offsetHeight; // Get navbar height
+                const marginGap = 20; // Small gap below navbar
+        
+                window.scrollTo({
+                    top: section.offsetTop - (navHeight + marginGap),
+                    behavior: "smooth"
+                });
+            });
+        });   
+</script>
 </body>
 </html>
