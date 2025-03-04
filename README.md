@@ -2,11 +2,46 @@
 
 **ChefMate** is a web-based Recipe Recommendation System designed to help users discover new recipes based on their preferences. Built with HTML, CSS, and Flask, ChefMate offers an intuitive interface to search and view detailed recipes.
 
+## Deployed Link
+
+https://chefmate-v3gs.onrender.com/
+("Since Render is a free hosting service, the application may experience a delay of approximately 50 seconds when starting up.") 
+
 ## Features
 
 - **Recipe Search**: Users can search for recipes using keywords or ingredients.
 - **Recipe Recommendations**: Based on the search query, ChefMate provides a list of recommended recipes.
 - **Detailed View**: Each recipe includes comprehensive details such as ingredients, preparation steps, and cooking time.
+
+  
+
+## 🛠️ Core Components
+
+| Technology       | Role in the Project |
+|-----------------|--------------------|
+| Python (3.x)    | Primary programming language for backend logic and ML models. |
+| Flask           | Web framework for handling routes, rendering templates, and managing backend logic. |
+| Jinja2          | Template engine to dynamically render HTML pages with backend data. |
+| Gunicorn        | WSGI server for running Flask applications in production. |
+| Virtualenv      | Creates an isolated Python environment to manage dependencies. |
+
+## 🎨 Frontend Technologies
+
+| Technology    | Role in the Project |
+|--------------|--------------------|
+| HTML        | Provides the structure for web pages (forms, buttons, results display). |
+| CSS         | Styles the website with modern design and responsiveness. |
+| JavaScript  | Enhances user interaction and dynamic content updates. |
+| Pexels API  | Fetches high-quality food images to enhance recipe displays. |
+| CSV File    | Stores and loads dataset information (e.g., recipes and ingredients). |
+
+## 🚀 Deployment Tools
+
+| Technology | Role in the Project |
+|-----------|--------------------|
+| Git       | Version control to track project changes. |
+| GitHub    | Hosts the project repository for collaboration and deployment. |
+| Render    | Cloud hosting service used for deploying the Flask application. |
 
 ## Screenshots
 
@@ -81,9 +116,11 @@ We welcome contributions to enhance ChefMate. To contribute:
    ```
 5. Open a Pull Request detailing your changes.
 
-## License
+## 🤝 Contributing
+Feel free to submit issues, fork the repository, and open pull requests to contribute to Chefmate!
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+## 📞 Contact
+For any inquiries or collaboration, reach out via GitHub issues or email: `jeraldmathewsjomy@gmail.com`.
 
 ## Acknowledgements
 
